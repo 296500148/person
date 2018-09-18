@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <style>
+    canvas{
+     position: absolute;
+     z-index: -1;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="canvas"></canvas>
+  <img src="" alt="">
+  <script>
+    function Strray(){
+      var canvas = document.getElementById('canvas');
+      this.cxt = canvas.getContext('2d');
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      this.width = canvas.width;
+      this.height = canvas.height;
+      this.date = [];
+      this.num = 100;
+      this.circle = [];
+      this.color;
+    }
+    Strray.prototype = {
+      init: function(){
+        var This = this;
+        for(var i=0;i<This.num;i++){
+          This.date[i] = {
+            x:i*This.width/This.num,
+            y:Math.random()*This.height*0.2
+          }
+          This.drawCircle(This.date[i].x,This.date[i].y);
+        }
+        for(var i=0;i<10;i++){
+         This.circle[i] = {
+           x:i*This.width/10,
+           y:(Math.random()*This.height*0.2+This.height*0.7)*2,
+           r:Math.random()*20
+         } 
+        }
+      },
+      drawCircle:function(x,y){
+        var This = this;
+        var cxt = This.cxt;
+        cxt.save();
+        cxt.beginPath();
+        cxt.fillStyle = "#ccc";
+        cxt.arc(x,y,1,2*Math.PI,false);
+        cxt.closePath();
+        cxt.fill();
+        cxt.restore();
+      },
+      moveCircle:function(){
+        var This = this;
+        var cxt = This.cxt;
+        this.color = cxt.createLinearGradient(This.width/2,0,This.width/2,This.height);
+        this.color.addColorStop(0,"rgba(0,0,0,0.1)")
+        this.color.addColorStop(1,"rgba(18,100,203,0.1)")
+        cxt.fillStyle = this.color;
+        cxt.fillRect(0,0,This.width,This.height);
+        for(var i = 0;i<This.num;i++){
+          This.date[i].y = ( This.date[i].y>This.height*0.6+Math.random()*This.height*0.4)? Math.random()*This.height*0.2:This.date[i].y+2;
+          This.drawCircle(This.date[i].x,This.date[i].y);
+        }
+       
+      },
+      drawRain:function(x,y,r){
+        var cxt = this.cxt;
+        cxt.save();
+        cxt.beginPath();
+        cxt.strokeStyle = "#ccc";
+        cxt.scale(1,0.5);
+        cxt.arc(x,y,r,2*Math.PI,false); 
+        cxt.stroke();
+        cxt.closePath();
+        cxt.restore();
+      },
+      changeBig:function(){
+        var This = this;
+        var cxt = This.cxt;
+        for(var i=0;i<10;i++){
+          if(This.circle[i].r<100){
+            This.circle[i].r = This.circle[i].r+Math.random()*0.5;
+          }else{
+            This.circle[i].r = Math.random()*50;
+            This.circle[i].x = i*This.width/10+50;
+            This.circle[i].y = (Math.random()*This.height*0.2+This.height*0.7)*2;
+          }
+          This.drawRain(This.circle[i].x,This.circle[i].y,This.circle[i].r);
+        }
+      }
+    }
+    var strray = new Strray();
+    strray.init();
+    setInterval(function(){
+      strray.moveCircle();
+      strray.moveCircle();
+      strray.changeBig();
+    },10);
+  </script>
+</body>
+</html>

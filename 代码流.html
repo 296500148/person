@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <style>
+  canvas{
+    background-color: #000;
+  }
+  </style>
+</head>
+<body>
+  <canvas id="canvas"></canvas>
+  <script>
+    var canvas =document.getElementById('canvas');
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    function Strray(){ 
+      this.cxt = canvas.getContext('2d');
+      this.date = [];
+      this.num = 120;
+      this.width = canvas.width;
+      this.height = canvas.height;
+     }
+     Strray.prototype = {
+       init:function(){
+         for(var i=0;i<this.num;i++){
+           this.date[i] = {
+             x: i*this.width/this.num,
+             y: Math.random()*30
+           }
+           this.drawText(this.date[i].x,this.date[i].y,this.getColor());
+         }
+       },
+       drawText:function(x,y,color){
+         var cxt = this.cxt;
+         cxt.fillStyle= color;
+         cxt.fillText(this.getText(),x,y);
+       },
+       getText:function(){
+        var arry = ['0','1','2','3','4','5','6','7','8','9','a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z','A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z'];
+        return arry[Math.round(Math.random()*(arry.length-1))];
+       },
+       getColor:function(){
+         return "rgb("+Math.round(Math.random()*255)+","+Math.round(Math.random()*255)+","+Math.round(Math.random()*255)+")";
+       },
+       moveText:function(){
+        var cxt = this.cxt;
+        cxt.fillStyle = "rgba(0,0,0,0.1)";
+        cxt.fillRect(0,0,this.width,this.height);
+        for(var i=0;i<this.num;i++){
+          this.date[i].y = (this.date[i].y>this.height*0.6+Math.random()*this.height*0.4)? 0:this.date[i].y+5+Math.random()*20;
+          this.drawText(this.date[i].x,this.date[i].y,this.getColor());
+        }
+       }
+     }
+     var strray = new Strray();
+     strray.init();
+     setInterval(function(){
+       strray.moveText()
+       },30);
+     console.log(strray.getText());
+  </script>
+</body>
+</html>
